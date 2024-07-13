@@ -15,22 +15,20 @@ class Formatter(logging.Formatter):
         return datetime.fromtimestamp(record.created).strftime(datefmt or self.datefmt)
 
 
-stream_handler = logging.StreamHandler(sys.stdout)
-stream_handler.setLevel(logging.DEBUG)
-stream_handler.setFormatter(
-    Formatter("%(asctime)s | %(message)s", "%d.%m.%Y %H:%M:%S.%f %z")
-)
+formatter = Formatter("%(asctime)s | %(message)s", "%d.%m.%Y %H:%M:%S.%f %z")
+handlers = [
+    logging.StreamHandler(sys.stdout),
+    logging.FileHandler(filename=os.path.join(logs_basedir, "twitchbot-debug.log"), mode="a")
+]
 
-file_handler = logging.FileHandler(filename=os.path.join(logs_basedir, "twitchbot-debug.log"), mode="a")
-file_handler.setLevel(logging.DEBUG)
-file_handler.setFormatter(
-    Formatter("%(asctime)s | %(message)s", "%d.%m.%Y %H:%M:%S.%f %z")
-)
+for handler in handlers:
+    handler.setLevel(logging.DEBUG)
+    handler.setFormatter(formatter)
 
 
 def setup_logger() -> logging.Logger:
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
-    logger.addHandler(stream_handler)
-    logger.addHandler(file_handler)
+    for logger_handler in handlers:
+        logger.addHandler(logger_handler)
     return logger
