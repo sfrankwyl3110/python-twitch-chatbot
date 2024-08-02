@@ -9,10 +9,16 @@ client_id = os.getenv('TWITCH_CLIENT_ID')
 refresh_token = os.getenv('TWITCH_REFRESH_TOKEN')
 access_token = os.getenv('TWITCH_ACCESS_TOKEN')
 
+twitch_channels = os.getenv('TWITCH_CHANNELS')
+if "," in twitch_channels:
+    twitch_channels = twitch_channels.split(",")
+else:
+    twitch_channels = [twitch_channels]
+
 
 class Bot(commands.Bot):
     def __init__(self):
-        super().__init__(token=access_token, prefix='!', initial_channels=['itz_izzeeeey'])
+        super().__init__(token=access_token, prefix='!', initial_channels=twitch_channels)
 
     async def event_command_error(self, context: commands.Context, error: Exception):
         if isinstance(error, commands.CommandNotFound):

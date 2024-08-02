@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime
 
 import yarl
@@ -61,6 +62,16 @@ async def cookie(ctx: commands.Context, amount: int = None, user: User = None) -
 import requests
 
 session = requests.session()
+
+twitch_admin_user = os.getenv('TWITCH_USER')
+
+
+@bot.command(name="ai", aliases=("openai", "aihelp"))
+async def cookie(ctx: commands.Context, message: str = None) -> None:
+    if ctx.author.name == twitch_admin_user:
+        await ctx.send(f"{ctx.author.name} sent an ai request:{message}")
+    else:
+        await ctx.send(f"{ctx.author.name} is not allowed to send a ai request")
 
 
 @bot.command(name="weather", aliases=("whatweather", "currentweather"))
